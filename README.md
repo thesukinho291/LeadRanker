@@ -6,6 +6,12 @@ A ideia do programa é buscar possíveis leads usando dados públicos do OpenStr
 
 Esse projeto foi feito como estudo e portfólio, tentando juntar interface gráfica, consumo de API, análise de dados simples e exportação para Excel.
 
+## Status atual
+
+O projeto está na versão de MVP funcional.
+
+Nesta fase a ideia principal já está pronta: buscar leads reais, organizar na tela, calcular uma prioridade, gerar uma mensagem de abordagem, abrir o WhatsApp para envio manual e exportar os dados.
+
 ## O que o programa faz
 
 - Busca empresas por cidade e nicho usando OpenStreetMap, Nominatim e Overpass.
@@ -17,6 +23,7 @@ Esse projeto foi feito como estudo e portfólio, tentando juntar interface gráf
 - Gera uma mensagem pronta para contato.
 - Abre o WhatsApp com a mensagem preenchida, mas o envio fica manual.
 - Exporta os leads para Excel.
+- Permite limpar os resultados para iniciar uma nova busca.
 
 ## Por que usei OpenStreetMap
 

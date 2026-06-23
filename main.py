@@ -643,6 +643,7 @@ class LeadRankerApp(ctk.CTk):
         self.mensagens_button = self._button("Gerar mensagens", self.gerar_mensagens)
         self.exportar_button = self._button("Exportar Excel", self.exportar)
         self.whatsapp_button = self._button("Abrir WhatsApp", self.abrir_whatsapp)
+        self.limpar_button = self._button("Limpar resultados", self.limpar_resultados)
 
         status_box = ctk.CTkFrame(self.sidebar, fg_color=COLORS["panel_alt"], corner_radius=8)
         status_box.grid(row=2, column=0, sticky="ew", padx=24, pady=(8, 18))
@@ -892,11 +893,17 @@ class LeadRankerApp(ctk.CTk):
 
         visible_leads = self._visible_leads()
         if not visible_leads:
+            empty_text = (
+                "Nenhum lead aparece com os filtros atuais."
+                if self.leads
+                else "Nenhum lead para mostrar. Busque no OpenStreetMap para começar."
+            )
             ctk.CTkLabel(
                 self.table,
-                text="Nenhum lead para mostrar. Busque no OpenStreetMap para começar.",
+                text=empty_text,
                 text_color=COLORS["muted"],
                 font=ctk.CTkFont(size=14),
+                wraplength=360,
             ).grid(row=0, column=0, pady=80)
             return
 
@@ -998,11 +1005,8 @@ class LeadRankerApp(ctk.CTk):
         self._detail_pair(score_card, "Presença", str(lead.score_presenca_digital), 1, 1)
         self._detail_pair(score_card, "Oportunidade", str(lead.score_oportunidade), 2, 0)
         self._detail_pair(score_card, "Dados", str(lead.score_qualidade_dados), 2, 1)
-        self._detail_pair(score_card, "Dados OSM", str(lead.quantidade_avaliacoes), 1, 0)
-        self._detail_pair(score_card, "Site", "Sim" if lead.site else "Não", 1, 1)
-
-        self._detail_pair(score_card, "Contato", str(lead.score_contato), 3, 0)
-        self._detail_pair(score_card, "Presença", str(lead.score_presenca_digital), 3, 1)
+        self._detail_pair(score_card, "Dados OSM", str(lead.quantidade_avaliacoes), 3, 0)
+        self._detail_pair(score_card, "Tem site", "Sim" if lead.site else "Não", 3, 1)
 
         info = ctk.CTkFrame(self.details_content, fg_color="transparent")
         info.grid(row=3, column=0, sticky="ew", padx=12, pady=(0, 12))
@@ -1164,6 +1168,10 @@ class LeadRankerApp(ctk.CTk):
         except ValueError:
             quantidade = 12
 
+        quantidade = max(1, min(quantidade, 50))
+        self.quantidade_entry.delete(0, "end")
+        self.quantidade_entry.insert(0, str(quantidade))
+
         self.is_loading = True
         self.buscar_button.configure(text="Buscando...", state="disabled")
         self._set_status("Buscando leads no OpenStreetMap...")
@@ -1187,10 +1195,15 @@ class LeadRankerApp(ctk.CTk):
         self.buscar_button.configure(text="Buscar no OpenStreetMap", state="normal")
 
         if error:
-            self._set_status(str(error))
+            self._set_status(f"Erro na busca: {error}")
             return
 
         if not leads:
+            self.leads = []
+            self.selected_index = None
+            self._render_table()
+            self._render_details()
+            self._update_metrics()
             self._set_status(f"Nenhum lead encontrado para {nicho} em {cidade}.")
             return
 
@@ -1313,8 +1326,35 @@ class LeadRankerApp(ctk.CTk):
             self._set_status("Busque leads antes de exportar.")
             return
 
-        caminho = exportar_excel(self.leads)
+        try:
+            caminho = exportar_excel(self.leads)
+        except PermissionError:
+            self._set_status("Não foi possível exportar. Feche o Excel e tente de novo.")
+            return
+        except Exception as error:
+            self._set_status(f"Erro ao exportar Excel: {error}")
+            return
+
         self._set_status(f"Excel exportado em: {caminho}")
+
+    def limpar_resultados(self):
+        if self.is_loading:
+            return
+
+        self.leads = []
+        self.selected_index = None
+        self.status_filter = "Todos"
+        self.site_filter = "Ambos"
+        self.instagram_filter = "Ambos"
+        self.telefone_filter = "Ambos"
+        self.filter_menu.set("Todos")
+        self.site_filter_menu.set("Ambos")
+        self.instagram_filter_menu.set("Ambos")
+        self.telefone_filter_menu.set("Ambos")
+        self._render_table()
+        self._render_details()
+        self._update_metrics()
+        self._set_status("Resultados limpos. Você pode iniciar uma nova busca.")
 
     def abrir_whatsapp(self):
         # Abre o WhatsApp com a mensagem pronta, mas o envio continua manual.
@@ -1332,7 +1372,11 @@ class LeadRankerApp(ctk.CTk):
         if hasattr(self, "message_box"):
             lead.mensagem_gerada = self.message_box.get("1.0", "end").strip()
 
-        webbrowser.open(f"https://wa.me/55{telefone}?text={quote(lead.mensagem_gerada)}")
+        if not lead.mensagem_gerada:
+            lead.mensagem_gerada = gerar_mensagem(lead)
+
+        numero_whatsapp = telefone if telefone.startswith("55") else f"55{telefone}"
+        webbrowser.open(f"https://wa.me/{numero_whatsapp}?text={quote(lead.mensagem_gerada)}")
         lead.status = "Chamado"
         self._render_table()
         self._render_details()
