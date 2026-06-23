@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+
+exports/
+
+.env
+config.json
+
+imagens/fundo.png
+imagens/icone.png
