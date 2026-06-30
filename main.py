@@ -232,12 +232,13 @@ class LeadRankerApp(ctk.CTk):
 
         for index, (label, weight) in enumerate([("Empresa", 5), ("Score", 1), ("Classe", 1)]):
             table_header.grid_columnconfigure(index, weight=weight)
+            alinhamento = "w" if index == 0 else "center"
             ctk.CTkLabel(
                 table_header,
                 text=label,
                 text_color=COLORS["muted_2"],
                 font=ctk.CTkFont(size=12, weight="bold"),
-                anchor="w",
+                anchor=alinhamento,
             ).grid(row=0, column=index, sticky="ew", padx=10, pady=9)
 
         self.table = ctk.CTkScrollableFrame(self.table_card, fg_color=COLORS["bg"])
@@ -427,12 +428,13 @@ class LeadRankerApp(ctk.CTk):
 
             for column, value in enumerate(values):
                 color = CLASS_COLORS.get(lead.classificacao, COLORS["text"]) if column == 2 else COLORS["text"]
+                alinhamento = "w" if column == 0 else "center"
                 ctk.CTkLabel(
                     row,
                     text=value,
                     text_color=color,
-                    justify="left",
-                    anchor="w",
+                    justify="left" if column == 0 else "center",
+                    anchor=alinhamento,
                     wraplength=245 if column == 0 else 95,
                     font=ctk.CTkFont(size=12, weight="bold" if column in [1, 2] else "normal"),
                 ).grid(row=0, column=column, sticky="ew", padx=10, pady=12)
