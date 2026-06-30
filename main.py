@@ -520,6 +520,11 @@ class LeadRankerApp(ctk.CTk):
             f"Endereço: {lead.endereco}",
             f"Site: {lead.site or 'Não possui'}",
             f"Site básico: {'Sim' if lead.site_basico else 'Não'}",
+            f"Status site: {lead.site_status_code or 'Não analisado'}",
+            f"Tempo site: {lead.site_tempo_resposta or 'Não analisado'}",
+            f"Título site: {lead.site_titulo or 'Não analisado'}",
+            f"WhatsApp no site: {'Sim' if lead.site_tem_whatsapp else 'Não'}",
+            f"Formulário no site: {'Sim' if lead.site_tem_formulario else 'Não'}",
         ]
         for index, line in enumerate(lines):
             ctk.CTkLabel(

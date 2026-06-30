@@ -18,6 +18,7 @@ Nesta fase a ideia principal já está pronta: buscar leads reais, organizar na 
 - Mostra os leads em uma interface feita com CustomTkinter.
 - Calcula score de prioridade para cada lead.
 - Analisa presença digital básica, como site, telefone e Instagram cadastrado.
+- Analisa sinais simples do site, como HTTPS, tempo de resposta, erro HTTP, título, conteúdo, formulário e WhatsApp.
 - Tenta identificar empresas que parecem ser filiais ou redes grandes.
 - Permite filtrar leads com ou sem site, Instagram e telefone.
 - Gera uma mensagem pronta para contato.
@@ -60,9 +61,25 @@ Empresas que parecem ser filiais ou redes grandes recebem uma penalização, por
 - Requests
 - OpenPyXL
 - Pillow
+- BeautifulSoup
 - OpenStreetMap
 - Nominatim
 - Overpass API
+
+## Análise dos sites
+
+A análise dos sites ainda é simples, mas agora ela usa critérios mais concretos:
+
+- verifica se o site usa HTTPS;
+- mede o tempo de resposta;
+- guarda o status HTTP;
+- lê o título da página;
+- procura formulário de contato;
+- procura link de WhatsApp;
+- procura link de Instagram;
+- identifica páginas com pouco conteúdo textual.
+
+Com esses dados o LeadRanker consegue explicar melhor por que um lead parece ter oportunidade de melhoria.
 
 ## Estrutura atual
 
@@ -110,6 +127,5 @@ O envio de mensagens não é automático. O sistema apenas abre o WhatsApp com a
 ## Próximas melhorias
 
 - Salvar leads em SQLite.
-- Melhorar a análise dos sites.
 - Gerar executável `.exe` com PyInstaller.
 - Melhorar a personalização das mensagens.

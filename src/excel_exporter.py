@@ -19,6 +19,13 @@ def exportar_excel(leads):
         "nicho",
         "endereco",
         "site",
+        "site_status_code",
+        "site_tempo_resposta",
+        "site_titulo",
+        "site_tem_whatsapp",
+        "site_tem_formulario",
+        "site_tem_instagram",
+        "site_motivos",
         "instagram",
         "filial",
         "motivo_filial",
@@ -45,6 +52,13 @@ def exportar_excel(leads):
         "Nicho",
         "Endereço",
         "Site",
+        "Status Site",
+        "Tempo Site",
+        "Título Site",
+        "Site Tem WhatsApp",
+        "Site Tem Formulário",
+        "Site Tem Instagram",
+        "Motivos Site",
         "Instagram",
         "Filial",
         "Motivo Filial",
@@ -69,6 +83,7 @@ def exportar_excel(leads):
     for lead in leads:
         dados = asdict(lead)
         dados["motivos_score"] = " | ".join(lead.motivos_score)
+        dados["site_motivos"] = " | ".join(lead.site_motivos)
         sheet.append([dados[coluna] for coluna in colunas])
 
     for column in sheet.columns:

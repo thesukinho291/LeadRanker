@@ -77,7 +77,10 @@ def calcular_score_presenca_digital(lead):
 
     if lead.site_basico:
         score += 25
-        motivos.append("Site aparenta ser básico, lento ou instável.")
+        if lead.site_motivos:
+            motivos.append(f"Site pode melhorar: {lead.site_motivos[0]}")
+        else:
+            motivos.append("Site aparenta ser básico, lento ou instável.")
 
     return min(score, 100), motivos
 
