@@ -64,6 +64,29 @@ Empresas que parecem ser filiais ou redes grandes recebem uma penalização, por
 - Nominatim
 - Overpass API
 
+## Estrutura atual
+
+O projeto ainda continua simples, mas agora o código foi separado em partes menores:
+
+```text
+LeadRanker/
+├── main.py
+├── requirements.txt
+├── README.md
+├── src/
+│   ├── ai_message.py
+│   ├── excel_exporter.py
+│   ├── lead_scorer.py
+│   ├── models.py
+│   ├── places_api.py
+│   ├── site_analyzer.py
+│   └── whatsapp.py
+├── imagens/
+└── exports/
+```
+
+O `main.py` ficou mais focado na interface. As regras de score, busca no OpenStreetMap, exportação, mensagem e WhatsApp ficaram dentro da pasta `src`.
+
 ## Como rodar
 
 Instale as dependências:
@@ -87,7 +110,6 @@ O envio de mensagens não é automático. O sistema apenas abre o WhatsApp com a
 ## Próximas melhorias
 
 - Salvar leads em SQLite.
-- Separar o código em módulos dentro de uma pasta `src`.
 - Melhorar a análise dos sites.
 - Gerar executável `.exe` com PyInstaller.
 - Melhorar a personalização das mensagens.
