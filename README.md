@@ -1,89 +1,84 @@
 # LeadRanker
 
-LeadRanker é um projeto desktop feito em Python para ajudar na prospecção de empresas locais.
+Projeto desktop em Python para ajudar na prospecção de empresas locais.
 
-A ideia do programa é buscar possíveis leads usando dados públicos do OpenStreetMap, organizar essas empresas em uma lista, calcular uma prioridade de contato e gerar uma mensagem pronta para abordagem manual pelo WhatsApp.
+Fiz esse projeto para treinar Python com interface gráfica, consumo de API pública, organização de dados, score de leads e exportação para Excel.
 
-Esse projeto foi feito como estudo e portfólio, tentando juntar interface gráfica, consumo de API, análise de dados simples e exportação para Excel.
+A ideia é simples: buscar empresas por cidade e nicho, analisar algumas informações básicas e ajudar a decidir quais leads parecem valer mais a pena chamar primeiro.
 
-## Status atual
+## Status
 
-O projeto está na versão de MVP funcional.
+O projeto está em fase de MVP funcional.
 
-Nesta fase a ideia principal já está pronta: buscar leads reais, organizar na tela, calcular uma prioridade, gerar uma mensagem de abordagem, abrir o WhatsApp para envio manual e exportar os dados.
+Já dá para buscar leads reais usando dados públicos do OpenStreetMap, ver os resultados na tela, analisar sites, gerar uma mensagem de abordagem e exportar os dados para Excel.
 
-## O que o programa faz
+Ainda não é um sistema pronto para uso profissional diário, mas já está funcionando como projeto de portfólio e base para evoluir.
 
-- Busca empresas por cidade e nicho usando OpenStreetMap, Nominatim e Overpass.
-- Mostra os leads em uma interface feita com CustomTkinter.
-- Calcula score de prioridade para cada lead.
-- Analisa presença digital básica, como site, telefone e Instagram cadastrado.
-- Analisa sinais simples do site, como HTTPS, tempo de resposta, erro HTTP, título, conteúdo, formulário e WhatsApp.
-- Tenta identificar empresas que parecem ser filiais ou redes grandes.
-- Permite filtrar leads com ou sem site, Instagram e telefone.
-- Gera uma mensagem pronta para contato.
-- Abre o WhatsApp com a mensagem preenchida, mas o envio fica manual.
-- Exporta os leads para Excel.
-- Permite limpar os resultados para iniciar uma nova busca.
+## O que ele faz
+
+- busca empresas por cidade e nicho;
+- usa dados públicos do OpenStreetMap, Nominatim e Overpass;
+- mostra os leads em uma interface feita com CustomTkinter;
+- calcula um score de prioridade;
+- classifica os leads como quente, bom, médio ou frio;
+- tenta identificar empresas que parecem ser filiais ou redes grandes;
+- filtra empresas com ou sem site, Instagram e telefone;
+- analisa alguns sinais simples do site;
+- gera uma mensagem pronta para contato;
+- abre o WhatsApp com a mensagem preenchida, mas o envio é manual;
+- exporta os leads para Excel.
 
 ## Por que usei OpenStreetMap
 
-No começo pensei em usar Google Maps, mas a API oficial pode ter custo e scraping não é uma boa prática.
+No começo pensei em usar Google Maps, mas a API oficial pode ter custo e scraping do Google não é uma boa ideia para esse tipo de projeto.
 
-Por isso escolhi OpenStreetMap com Overpass API, que permite buscar dados públicos sem depender de login ou chave paga.
-
-Os dados podem vir incompletos, mas isso também faz parte da análise: uma empresa sem site ou com poucas informações pode ser uma oportunidade melhor para oferecer presença digital.
+Por isso usei OpenStreetMap com Overpass API. Os dados nem sempre vêm completos, mas isso também faz parte da proposta: quando uma empresa não tem site, telefone ou presença digital bem cadastrada, pode existir uma oportunidade de abordagem.
 
 ## Como o score funciona
 
-O score não mede se a empresa é "melhor" ou "pior". Ele tenta medir se existe uma oportunidade de abordagem.
+O score não diz se a empresa é boa ou ruim.
 
-O cálculo considera:
+Ele tenta medir oportunidade de contato.
 
-- Score de contato
-- Score de presença digital
-- Score de oportunidade
-- Score de qualidade dos dados
+Hoje o cálculo considera:
 
-Depois disso o programa gera um score final e classifica o lead como:
+- dados de contato;
+- presença digital;
+- oportunidade comercial;
+- qualidade dos dados encontrados;
+- sinais básicos do site;
+- possibilidade de ser filial ou rede grande.
 
-- Quente
-- Bom
-- Médio
-- Frio
+Empresas que parecem ser redes grandes recebem uma penalização, porque normalmente não faz sentido tentar vender site ou presença digital para uma unidade de uma grande marca.
 
-Empresas que parecem ser filiais ou redes grandes recebem uma penalização, porque normalmente não faz sentido vender um site para uma grande rede.
+## Análise dos sites
 
-## Tecnologias usadas
+A análise ainda é simples, mas já olha alguns pontos úteis:
+
+- se o site usa HTTPS;
+- tempo de resposta;
+- status HTTP;
+- título da página;
+- se existe formulário;
+- se existe link de WhatsApp;
+- se existe link de Instagram;
+- se a página tem pouco conteúdo.
+
+Essas informações aparecem nos detalhes do lead e também entram na exportação.
+
+## Tecnologias
 
 - Python
 - CustomTkinter
 - Requests
+- BeautifulSoup
 - OpenPyXL
 - Pillow
-- BeautifulSoup
 - OpenStreetMap
 - Nominatim
 - Overpass API
 
-## Análise dos sites
-
-A análise dos sites ainda é simples, mas agora ela usa critérios mais concretos:
-
-- verifica se o site usa HTTPS;
-- mede o tempo de resposta;
-- guarda o status HTTP;
-- lê o título da página;
-- procura formulário de contato;
-- procura link de WhatsApp;
-- procura link de Instagram;
-- identifica páginas com pouco conteúdo textual.
-
-Com esses dados o LeadRanker consegue explicar melhor por que um lead parece ter oportunidade de melhoria.
-
-## Estrutura atual
-
-O projeto ainda continua simples, mas agora o código foi separado em partes menores:
+## Estrutura
 
 ```text
 LeadRanker/
@@ -102,7 +97,7 @@ LeadRanker/
 └── exports/
 ```
 
-O `main.py` ficou mais focado na interface. As regras de score, busca no OpenStreetMap, exportação, mensagem e WhatsApp ficaram dentro da pasta `src`.
+O `main.py` ficou mais focado na interface. A lógica principal foi separada nos arquivos da pasta `src`.
 
 ## Como rodar
 
@@ -120,12 +115,14 @@ python main.py
 
 ## Observações
 
-O programa depende dos dados disponíveis no OpenStreetMap. Algumas empresas podem não ter telefone, site ou Instagram cadastrados.
+O envio pelo WhatsApp não é automático. O programa só abre a conversa com a mensagem pronta para revisão.
 
-O envio de mensagens não é automático. O sistema apenas abre o WhatsApp com a mensagem pronta para revisão.
+Os dados vêm do OpenStreetMap, então alguns leads podem aparecer sem telefone, site ou Instagram.
 
-## Próximas melhorias
+## Próximos passos
 
-- Salvar leads em SQLite.
-- Gerar executável `.exe` com PyInstaller.
-- Melhorar a personalização das mensagens.
+- salvar leads em SQLite;
+- melhorar o histórico de status dos leads;
+- gerar executável `.exe`;
+- melhorar ainda mais as mensagens;
+- testar melhor a busca em cidades e nichos diferentes.
